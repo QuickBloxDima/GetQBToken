@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quickblox/2.1.4/quickblox.min.js"></script>
+</head>
+<body>
+
+
+<div align="center">
+    <div id="centerLayer">
+        <p><b>App ID:</b><br></p>
+        <input id="app_id" type="text" size="40">
+        <p><b>Auth key:</b><br></p>
+        <input id="auth_key" type="text" size="40">
+        <p><b>Auth secret:</b><br></p>
+        <input id="auth_secret" type="text" size="40">
+        <p><b>Api URL:</b><br></p>
+        <input id="api_url" type="text" size="40" placeholder="api.quickblox.com">
+        <p><b>User login:</b><br></p>
+        <input id="user_login" type="text" size="40">
+        <p><b>User password:</b><br></p>
+        <input id="user_password" type="text" size="40">
+        <p><input type="submit" value="Generate" onclick="test()"></p>
+        <p><b>TOKEN:</b><br></p>
+        <input id="token" type="text" size="50">
+    </div>
+</div>
+
+
+<script>
+
+    function getCerdentials() {
+        var CREDENTIALS = {
+            appId: document.getElementById('app_id').value,
+            authKey:  document.getElementById('auth_key').value,
+            authSecret:  document.getElementById('auth_secret').value
+        };
+
+        return CREDENTIALS;
+    }
+
+    function getConfig() {
+        var CONFIG = {
+            endpoints: {
+                api: document.getElementById('api_url').value // set custom API endpoint
+            }
+        };
+        return CONFIG;
+    }
+    
+    function getUser() {
+        var user = {
+            login: document.getElementById('user_login').value,
+            password: document.getElementById('user_password').value
+        };
+        return user;
+    }
+
+    function test() {
+        var CREDENTIALS = getCerdentials();
+        var CONFIG = getConfig();
+        var user = getUser();
+        QB.init(CREDENTIALS.appId, CREDENTIALS.authKey, CREDENTIALS.authSecret, CONFIG);
+
+        if (user.login.length != 0 && user.password.length != 0){
+            QB.createSession({login: user.login, password: user.password}, function (err, result) {
+                if (result) {
+                    session = result.token;
+                    document.getElementById('token').value=session;
+                }
+                if (err){
+                    document.getElementById('token').value=err.detail;
+                }
+            });
+        }else {
+            QB.createSession(function (err, result) {
+                if (result) {
+                    session = result.token;
+                    document.getElementById('token').value=session;
+                }
+                if (err){
+                    document.getElementById('token').value=err.detail;
+                }
+            });
+        }
+
+
+    }
+
+</script>
+
+</body>
+</html>
